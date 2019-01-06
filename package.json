@@ -1,0 +1,28 @@
+{
+  "name": "tradefinance",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "truffle test",
+    "ganache": "./scripts/custom_ganache.sh",
+    "compile": "truffle compile",
+    "develop": "truffle develop",
+    "migrate:local": "truffle migrate --reset --network ganache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vyomshm/TradeFinance.git"
+  },
+  "author": "@vyomshm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vyomshm/TradeFinance/issues"
+  },
+  "homepage": "https://github.com/vyomshm/TradeFinance#readme",
+  "dependencies": {
+    "ganache-cli": "^6.2.5",
+    "truffle": "^5.0.1",
+    "web3": "^1.0.0-beta.37"
+  }
+}
