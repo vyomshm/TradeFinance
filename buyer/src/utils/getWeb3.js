@@ -24,7 +24,7 @@ const getWeb3 = () =>
       //   resolve(web3);
       // }
       // Fallback to localhost; use dev console port by default...
-      if(1) {
+      if(true) {
         const provider = new Web3.providers.HttpProvider(
           "http://127.0.0.1:8545"
         );
