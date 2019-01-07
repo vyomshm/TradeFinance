@@ -11120,10 +11120,16 @@
       "links": {},
       "address": "0x2dB70a5f49d0FE8648cd4349c10EE2a033549120",
       "transactionHash": "0xb4b2112d84b17a55ed98af92b0a086792e37f4512b67ab35059303e0d7c4edd5"
+    },
+    "1546860324743": {
+      "events": {},
+      "links": {},
+      "address": "0xA63eeF44528CB749933D546e8e960C7Ac2170D42",
+      "transactionHash": "0x25e7603dff89c7db2f076280d7a3d186191317dfb427d85b786753318e59ffe5"
     }
   },
   "schemaVersion": "3.0.1",
-  "updatedAt": "2019-01-06T16:51:34.119Z",
+  "updatedAt": "2019-01-07T11:25:48.072Z",
   "devdoc": {
     "methods": {}
   },
