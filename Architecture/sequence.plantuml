@@ -1,0 +1,28 @@
+@startuml
+autonumber
+actor Buyer
+actor Seller
+participant BuyerBank
+
+create SmartContract
+Buyer -> SmartContract : create & deploy
+
+Seller -> SmartContract : approves contract & terms
+BuyerBank -> SmartContract : initiates trade by sending an escrow deposit
+
+create Escrow
+SmartContract -> Escrow : creates & funds escrow 
+
+participant InsuranceCompany
+InsuranceCompany -> SmartContract: insures trade and uploads a insurance certificate 
+
+participant SurveyCompany
+SurveyCompany -> SmartContract : surveys goods and provides quality assurance approval 
+
+participant Captain
+Captain -> SmartContract : loads & ships goods providing a confirmation at the end
+BuyerBank -> SmartContract : final approval
+SmartContract -> Escrow : release of funds
+participant SellerBank
+Escrow -> SellerBank : funds transferred & trade concluded
+@enduml
