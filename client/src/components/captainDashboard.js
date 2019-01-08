@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-class CrudeOil extends Component{
+class CaptainDashboard extends Component{
 	render(){
 		return (
 			<div className="App">
-				<h1> Crude Oil </h1>
+				<h1> Captain Dashboard </h1>
 			</div>
 		);
 	}
 }
 
-export default CrudeOil;
+export default CaptainDashboard;

@@ -1,13 +1,37 @@
 import React, { Component } from "react";
 import TradeFinance from "./contracts/TradeFinance.json";
 import getWeb3 from "./utils/getWeb3";
-import Dashboard from "./components/dashboard";
 import { Formik, FormikProps, Form, Field, ErrorMessage } from 'formik';
-
 import "./App.css";
 
+// placeholder imports
+// TO-DO - move all functionality inside respective components and manage state
+import BuyerDashboard from "./components/buyerDashboard";
+import SellerDashboard from "./components/sellerDashboard";
+import BuyerBankDashboard from "./components/buyerBankDashboard";
+import SellerBankDashboard from "./components/sellerBankDashboard";
+import CaptainDashboard from "./components/captainDashboard";
+import InsuranceCompanyDashboard from "./components/insuranceCompanyDashboard";
+import SurveyCompanyDashboard from "./components/surveyCompanyDashboard";
+
 class App extends Component {
-  state = { trade: null, approval: null, web3: null, accounts: null, contract: null };
+  state = { 
+    commodity: null,
+    price: null,
+    deliveryDate: null,
+    deliveryVehicle: null,
+    deliveryTerms: null,
+    quantity: null,
+    tolerance: null,
+    surveyCompany: null,
+    insuranceCertificate: null,
+    commodityInfo: null,
+    status: null,
+    approval: null, 
+    web3: null, 
+    accounts: null, 
+    contract: null 
+  };
 
   componentDidMount = async () => {
     try {
@@ -44,7 +68,7 @@ class App extends Component {
   };
 
   runExample = async () => {
-    const { accounts, contract } = this.state;
+    const { contract } = this.state;
 
     // Get the value from the contract to prove it worked.
     const response = await contract.methods.approved().call();
@@ -52,22 +76,17 @@ class App extends Component {
     let t = await contract.methods.trade().call();
     console.log('trade specs: ', t);
     // Update state with the result.
-    this.setState({ trade: this.state.web3.utils.hexToAscii(t.commodity), approval: response.toString() });
+    this.setState({ commodity: this.state.web3.utils.hexToAscii(t.commodity), approval: response.toString() });
   };
 
-  // handleSubmit = ( values ) =>{
-  //   console.log(values);
-
-  //   setSubmitting(false);
-  //   return;
-  // }
-
+  // handler function for buyer dashboard
   deployContract = async (values) => {
-    const { accounts, contract, web3 } = this.state;
+    const { accounts, web3 } = this.state;
     let buyer = accounts[0];
     let seller = accounts[1];
     let buyerBank = accounts[2];
     let sellerBank = accounts[3];
+    const status = ["Initialized", "Approved", "Active", "Fulfilled", "Concluded"];
 
     let description = web3.utils.asciiToHex("trade finance : agreement contract");
     let commodity = web3.utils.asciiToHex(values.commodity);
@@ -83,7 +102,7 @@ class App extends Component {
     let commodityInfo = web3.utils.asciiToHex(values.commodityInfo);
 
     const tf = new web3.eth.Contract(TradeFinance.abi);
-    let tx = await tf.deploy({
+    let deployedTradeFinanceContract = await tf.deploy({
       data: TradeFinance.bytecode,
       arguments: [
         buyer,
@@ -107,8 +126,46 @@ class App extends Component {
       gas: 4712388
     });
 
+    // fetch trade object and update state
+    const trade = await deployedTradeFinanceContract.methods.trade().call();
+    this.setState({
+      contract: deployedTradeFinanceContract,
+      commodity: web3.utils.hexToAscii(trade.commodity),
+      price: trade.price,
+      deliveryDate: trade.deliveryDate,
+      deliveryVehicle: web3.utils.hexToAscii(trade.deliveryVehicle),
+      deliveryTerms: web3.utils.hexToAscii(trade.deliveryTerms),
+      quantity: trade.quantity,
+      tolerance: trade.tolerance,
+      surveyCompany: web3.utils.hexToAscii(trade.surveyCompany),
+      insuranceCertificate: web3.utils.hexToAscii(trade.insuranceCertificate),
+      commodityInfo: web3.utils.hexToAscii(trade.commodityInfo),
+      status: status[parseInt(trade.status)]
+    });
+
+    console.log(deployedTradeFinanceContract);
+    return deployedTradeFinanceContract.options.address;
+  }
+
+  // handler fn for seller dashboard
+  handleSellerApproval = async () => {
+    const { accounts, contract } = this.state;
+    let seller = accounts[1];
+    const status = ["Initialized", "Approved", "Active", "Fulfilled", "Concluded"];
+
+    let tx = await contract.methods.approveContract().send({
+      from: seller,
+      gas: 4712388
+    });
     console.log(tx);
-    return tx.options.address;
+    //update state
+    const approval = await contract.methods.approved().call();
+    const trade = await contract.methods.trade().call();
+
+    this.setState({
+      approval: approval.toString(),
+      status: status[parseInt(trade.status)]
+    });
   }
 
   render() {
@@ -122,9 +179,9 @@ class App extends Component {
         <h2>Dev : Check log output</h2>
         <p> Fetching trade specifics from pre-deployed contract...</p>
         <h3> Commodity : {this.state.trade}</h3>
-        <h4> Approved by buyer: {this.state.approval}</h4>
+        <h4> Approved by Seller: {this.state.approval}</h4>
 
-        <Dashboard />
+        <BuyerDashboard />
         <Formik 
           initialValues={{
             commodity: "",
@@ -188,6 +245,70 @@ class App extends Component {
             </Form>
           )}
         </Formik>
+
+        <h1>****************************</h1>
+
+        <SellerDashboard />
+        <h4> Trade Finance Contract : {this.state.contract.options.address}</h4>
+        <h3> Trade Details </h3>
+        <h4> Trade Status : {this.state.status} </h4>
+        <ul>
+          <li> Commodity : {this.state.commodity} </li>
+          <li> Price : {this.state.price} </li>
+          <li> Delivery Date : {this.state.deliveryDate} </li>
+          <li> Delivery Vehicle : {this.state.deliveryVehicle} </li>
+          <li> Delivery Terms : {this.state.deliveryTerms} </li>
+          <li> Quantity : {this.state.quantity} </li>
+          <li> Tolerance : {this.state.tolerance} </li>
+          <li> Survey Company : {this.state.surveyCompany} </li>
+          <li> Insurance Certificate : {this.state.insuranceCertificate} </li>
+          <li> Commodity Info : {this.state.commodityInfo} </li>
+        </ul>
+        <h4> Approved by Seller : {this.state.approval}</h4>
+        <button onClick={this.handleSellerApproval}>
+          Approve Contract
+        </button>
+
+        <h1>****************************</h1>
+
+        <BuyerBankDashboard />
+        <h4> Trade Finance Contract : {this.state.contract.options.address}</h4>
+        <h3> Trade Details </h3>
+        <h4> Trade Status : {this.state.status} </h4>
+        <ul>
+          <li> Commodity : {this.state.commodity} </li>
+          <li> Price : {this.state.price} </li>
+          <li> Delivery Date : {this.state.deliveryDate} </li>
+          <li> Delivery Vehicle : {this.state.deliveryVehicle} </li>
+          <li> Delivery Terms : {this.state.deliveryTerms} </li>
+          <li> Quantity : {this.state.quantity} </li>
+          <li> Tolerance : {this.state.tolerance} </li>
+          <li> Survey Company : {this.state.surveyCompany} </li>
+          <li> Insurance Certificate : {this.state.insuranceCertificate} </li>
+          <li> Commodity Info : {this.state.commodityInfo} </li>
+        </ul>
+        <h4> Approved by Seller : {this.state.approval}</h4>
+        <button onClick={this.handleSellerApproval}>
+          Approve Contract
+        </button>
+
+        <h1>****************************</h1>
+
+        <SellerBankDashboard />
+
+        <h1>****************************</h1>
+
+        <CaptainDashboard />
+
+        <h1>****************************</h1>
+
+        <InsuranceCompanyDashboard />
+
+        <h1>****************************</h1>
+
+        <SurveyCompanyDashboard />
+
+        <h1>****************************</h1>
       </div>
     );
   }

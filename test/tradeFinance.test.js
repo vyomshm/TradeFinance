@@ -63,7 +63,7 @@ contract("TradeFinance", (accounts) => {
 		// Step 1: Buyer approval
 		it("buyer should be able to approve trade params", async () => {
 			tx = await tradeFinance.approveContract({
-				from: buyer
+				from: seller
 			});
 			let approval = await tradeFinance.approved.call();
 			assert.equal(approval, true);
