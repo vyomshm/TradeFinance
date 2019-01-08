@@ -11132,10 +11132,16 @@
       "links": {},
       "address": "0xA4f321cFC547e8Cb4e855501F63829A5a5C46299",
       "transactionHash": "0xa694eb2044ccf799915f99b450b2a44aebb83a298a71fb7f49bfef8b6d050995"
+    },
+    "1546963777757": {
+      "events": {},
+      "links": {},
+      "address": "0xB6eC675aDb8f7770fF92fcFdae7B719EA70E8512",
+      "transactionHash": "0x678a02f026a96d6f944ff9a84822cc4aaa97e572af9610429e119628875b9bdc"
     }
   },
   "schemaVersion": "3.0.1",
-  "updatedAt": "2019-01-08T07:42:48.870Z",
+  "updatedAt": "2019-01-08T16:11:01.388Z",
   "devdoc": {
     "methods": {}
   },
