@@ -82,10 +82,10 @@ class App extends Component {
   // handler function for buyer dashboard
   deployContract = async (values) => {
     const { accounts, web3 } = this.state;
-    let buyer = accounts[0];
-    let seller = accounts[1];
-    let buyerBank = accounts[2];
-    let sellerBank = accounts[3];
+    const buyer = accounts[0];
+    const seller = accounts[1];
+    const buyerBank = accounts[2];
+    const sellerBank = accounts[3];
     const status = ["Initialized", "Approved", "Active", "Fulfilled", "Concluded"];
 
     let description = web3.utils.asciiToHex("trade finance : agreement contract");
@@ -151,7 +151,7 @@ class App extends Component {
   // handler fn for seller dashboard
   handleSellerApproval = async () => {
     const { accounts, contract } = this.state;
-    let seller = accounts[1];
+    const seller = accounts[1];
     const status = ["Initialized", "Approved", "Active", "Fulfilled", "Concluded"];
 
     let tx = await contract.methods.approveContract().send({
@@ -170,6 +170,62 @@ class App extends Component {
   }
 
   //handler for buyerBank dashboard
+  fundEscrow = async () => {
+    const { accounts, contract, price, quantity } = this.state;
+    const buyerBank = accounts[2];
+    const status = ["Initialized", "Approved", "Active", "Fulfilled", "Concluded"];
+    let amt = parseInt(price)*parseInt(quantity);
+    amt = amt < 10000 ? 1500000 : amt;
+
+    let tx = await contract.methods.initiateTrade().send({
+      from: buyerBank,
+      gas: 4712388,
+      value: amt
+    });
+
+    console.log(tx);
+    const trade = await contract.methods.trade().call();
+    this.setState({ status: status[parseInt(trade.status)]});
+  }
+
+  // common handler for all other dashboards
+  // Note - *** To be Replaced with updated ref specs ****
+  indicateMetCondition = async (message) => {
+    const { accounts, web3, contract } = this.state;
+    const buyerBank = accounts[2];
+    const status = ["Initialized", "Approved", "Active", "Fulfilled", "Concluded"];
+
+    let tx = await contract.methods.indicateMetCondition(
+      web3.utils.asciiToHex(message)
+    ).send({
+      from: buyerBank,
+      gas: 4712388
+    });
+    console.log(tx);
+
+    // update state with latest status
+    const trade = await contract.methods.trade().call();
+    this.setState({ status: status[parseInt(trade.status)]});
+    
+    // TO-DO - Check if event emitted correctly 
+  }
+
+  //handler for seller Bank dashboard
+  finalSellerBankApproval = async () => {
+    const { accounts, web3, contract } = this.state;
+    const sellerBank = accounts[3];
+    const status = ["Initialized", "Approved", "Active", "Fulfilled", "Concluded"];
+
+    let tx = await contract.methods.finalSellerBankApproval().send({
+      from: sellerBank,
+      gas: 4712388
+    });
+    console.log(tx);
+
+    // update state with latest status
+    const trade = await contract.methods.trade().call();
+    this.setState({ status: status[parseInt(trade.status)]});
+  }
 
   render() {
     if (!this.state.web3) {
@@ -309,7 +365,7 @@ class App extends Component {
           onSubmit={ async (values, { setSubmitting })=>{
             await console.log(values);
 
-            await this.indicateMetCondition();
+            await this.indicateMetCondition(values.message);
             setSubmitting(false);
             return;
           }}
@@ -327,11 +383,28 @@ class App extends Component {
 
         <h1>****************************</h1>
         <SellerBankDashboard />
-        <h2> Final Seller Bank approval </h2>
 
+        <h4> Trade Finance Contract : {this.state.contract.options.address}</h4>
+        <h3> Trade Details </h3>
+        <h4> Trade Status : {this.state.status} </h4>
+        <ul>
+          <li> Commodity : {this.state.commodity} </li>
+          <li> Price : {this.state.price} </li>
+          <li> Delivery Date : {this.state.deliveryDate} </li>
+          <li> Delivery Vehicle : {this.state.deliveryVehicle} </li>
+          <li> Delivery Terms : {this.state.deliveryTerms} </li>
+          <li> Quantity : {this.state.quantity} </li>
+          <li> Tolerance : {this.state.tolerance} </li>
+          <li> Survey Company : {this.state.surveyCompany} </li>
+          <li> Insurance Certificate : {this.state.insuranceCertificate} </li>
+          <li> Commodity Info : {this.state.commodityInfo} </li>
+        </ul>
+        <h4> Approved by Seller : {this.state.approval}</h4>
+
+        <h3> Seller Bank  KYC approval </h3>
         <Formik 
           initialValues={{
-            message: ""
+            kyc: ""
           }}
           validate={(values) => {
             let errors = [];
@@ -341,25 +414,48 @@ class App extends Component {
           onSubmit={ async (values, { setSubmitting })=>{
             await console.log(values);
 
-            await this.indicateMetCondition();
+            //await this.indicateMetCondition(values.message);
             setSubmitting(false);
             return;
           }}
         >
           {( isSubmitting ) => (
             <Form>
-              <Field type="text" name="message" placeholder="message"/>
+              <Field type="file" name="kyc" placeholder="message"/>
               <button type="submit">
-                Submit approval
+                Submit KYC approval
               </button>
             </Form>
           )}
         </Formik>
 
+        <h2> Final Seller Bank Approval </h2>
+        <h4> Trade status : {this.state.status} </h4>
+        <button onClick={this.finalSellerBankApproval}>
+          Final Seller Bank Approval
+        </button>
 
         <h1>****************************</h1>
 
         <CaptainDashboard />
+        <h4> Trade Finance Contract : {this.state.contract.options.address}</h4>
+        <h3> Trade Details </h3>
+        <h4> Trade Status : {this.state.status} </h4>
+        <ul>
+          <li> Commodity : {this.state.commodity} </li>
+          <li> Price : {this.state.price} </li>
+          <li> Delivery Date : {this.state.deliveryDate} </li>
+          <li> Delivery Vehicle : {this.state.deliveryVehicle} </li>
+          <li> Delivery Terms : {this.state.deliveryTerms} </li>
+          <li> Quantity : {this.state.quantity} </li>
+          <li> Tolerance : {this.state.tolerance} </li>
+          <li> Survey Company : {this.state.surveyCompany} </li>
+          <li> Insurance Certificate : {this.state.insuranceCertificate} </li>
+          <li> Commodity Info : {this.state.commodityInfo} </li>
+        </ul>
+        <h4> Approved by Seller : {this.state.approval}</h4>
+
+
         <h2> Captain approval </h2>
 
         <Formik 
@@ -375,7 +471,7 @@ class App extends Component {
           onSubmit={ async (values, { setSubmitting })=>{
             await console.log(values);
 
-            await this.indicateMetCondition();
+            await this.indicateMetCondition(values.message);
             setSubmitting(false);
             return;
           }}
@@ -396,6 +492,23 @@ class App extends Component {
 
         <InsuranceCompanyDashboard />
 
+        <h4> Trade Finance Contract : {this.state.contract.options.address}</h4>
+        <h3> Trade Details </h3>
+        <h4> Trade Status : {this.state.status} </h4>
+        <ul>
+          <li> Commodity : {this.state.commodity} </li>
+          <li> Price : {this.state.price} </li>
+          <li> Delivery Date : {this.state.deliveryDate} </li>
+          <li> Delivery Vehicle : {this.state.deliveryVehicle} </li>
+          <li> Delivery Terms : {this.state.deliveryTerms} </li>
+          <li> Quantity : {this.state.quantity} </li>
+          <li> Tolerance : {this.state.tolerance} </li>
+          <li> Survey Company : {this.state.surveyCompany} </li>
+          <li> Insurance Certificate : {this.state.insuranceCertificate} </li>
+          <li> Commodity Info : {this.state.commodityInfo} </li>
+        </ul>
+        <h4> Approved by Seller : {this.state.approval}</h4>
+
         <h2> Insurance approval </h2>
 
         <Formik 
@@ -411,7 +524,7 @@ class App extends Component {
           onSubmit={ async (values, { setSubmitting })=>{
             await console.log(values);
 
-            await this.indicateMetCondition();
+            await this.indicateMetCondition(values.message);
             setSubmitting(false);
             return;
           }}
@@ -432,6 +545,23 @@ class App extends Component {
 
         <SurveyCompanyDashboard />
 
+        <h4> Trade Finance Contract : {this.state.contract.options.address}</h4>
+        <h3> Trade Details </h3>
+        <h4> Trade Status : {this.state.status} </h4>
+        <ul>
+          <li> Commodity : {this.state.commodity} </li>
+          <li> Price : {this.state.price} </li>
+          <li> Delivery Date : {this.state.deliveryDate} </li>
+          <li> Delivery Vehicle : {this.state.deliveryVehicle} </li>
+          <li> Delivery Terms : {this.state.deliveryTerms} </li>
+          <li> Quantity : {this.state.quantity} </li>
+          <li> Tolerance : {this.state.tolerance} </li>
+          <li> Survey Company : {this.state.surveyCompany} </li>
+          <li> Insurance Certificate : {this.state.insuranceCertificate} </li>
+          <li> Commodity Info : {this.state.commodityInfo} </li>
+        </ul>
+        <h4> Approved by Seller : {this.state.approval}</h4>
+
         <h2> Survey Company approval </h2>
 
         <Formik 
@@ -447,7 +577,7 @@ class App extends Component {
           onSubmit={ async (values, { setSubmitting })=>{
             await console.log(values);
 
-            await this.indicateMetCondition();
+            await this.indicateMetCondition(values.message);
             setSubmitting(false);
             return;
           }}

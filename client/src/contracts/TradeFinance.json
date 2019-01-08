@@ -11134,14 +11134,74 @@
       "transactionHash": "0xa694eb2044ccf799915f99b450b2a44aebb83a298a71fb7f49bfef8b6d050995"
     },
     "1546963777757": {
-      "events": {},
+      "events": {
+        "0xd197ef70dfa5d30c3e023138d4396103a72967d6a6ab897fdd1eecb9427e7e4c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "ContractApproved",
+          "type": "event",
+          "signature": "0xd197ef70dfa5d30c3e023138d4396103a72967d6a6ab897fdd1eecb9427e7e4c"
+        },
+        "0xb652d6c847e9869603d68a3e449fcb4b81f35b94a2a86946ca51bfbeb95491c6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_message",
+              "type": "bytes32"
+            }
+          ],
+          "name": "ConditionFullfiled",
+          "type": "event",
+          "signature": "0xb652d6c847e9869603d68a3e449fcb4b81f35b94a2a86946ca51bfbeb95491c6"
+        },
+        "0x642ada529b6301f6fe1b1ea3aece146ff7b00fdcb7402c85723f81f32f65a837": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_buyer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_seller",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_buyerBank",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_sellerBank",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "timestamp",
+              "type": "uint256"
+            }
+          ],
+          "name": "TradeConcluded",
+          "type": "event",
+          "signature": "0x642ada529b6301f6fe1b1ea3aece146ff7b00fdcb7402c85723f81f32f65a837"
+        }
+      },
       "links": {},
-      "address": "0xB6eC675aDb8f7770fF92fcFdae7B719EA70E8512",
-      "transactionHash": "0x678a02f026a96d6f944ff9a84822cc4aaa97e572af9610429e119628875b9bdc"
+      "address": "0x8b52A5B9753EEf38FD58BB8E033686F4e5eC2Ded",
+      "transactionHash": "0xbd92660428d0ceaae79ffea536cb14869797266688d52ef612031e9fee682652"
     }
   },
   "schemaVersion": "3.0.1",
-  "updatedAt": "2019-01-08T16:11:01.388Z",
+  "updatedAt": "2019-01-08T16:13:18.848Z",
   "devdoc": {
     "methods": {}
   },
