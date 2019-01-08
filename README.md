@@ -22,9 +22,9 @@ npm run migrate:local
 ### Dapp
 
 ```
-cd buyer
+cd client
 npm i
-npm run start
+yarn start
 ```
 
 ## TO-DO Production build
