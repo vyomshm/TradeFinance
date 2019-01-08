@@ -111,7 +111,7 @@ contract TradeFinance{
         escrow = new ConditionalTradeEscrow(4);
     }
 
-    function approveContract() public onlyBuyer {
+    function approveContract() public onlySeller {
         require(trade.status == TradeStatus.Initialized, "invalid status");
         approved = true;
         trade.status = TradeStatus.Approved;
