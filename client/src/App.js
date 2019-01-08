@@ -128,13 +128,14 @@ class App extends Component {
 
     // fetch trade object and update state
     const trade = await deployedTradeFinanceContract.methods.trade().call();
+    console.log('fetch: ', trade);
     this.setState({
       contract: deployedTradeFinanceContract,
       commodity: web3.utils.hexToAscii(trade.commodity),
       price: trade.price,
       deliveryDate: trade.deliveryDate,
       deliveryVehicle: web3.utils.hexToAscii(trade.deliveryVehicle),
-      deliveryTerms: web3.utils.hexToAscii(trade.deliveryTerms),
+      deliveryTerms: web3.utils.hexToAscii(trade.deliveryTerm),
       quantity: trade.quantity,
       tolerance: trade.tolerance,
       surveyCompany: web3.utils.hexToAscii(trade.surveyCompany),
@@ -167,6 +168,8 @@ class App extends Component {
       status: status[parseInt(trade.status)]
     });
   }
+
+  //handler for buyerBank dashboard
 
   render() {
     if (!this.state.web3) {
@@ -288,25 +291,178 @@ class App extends Component {
           <li> Commodity Info : {this.state.commodityInfo} </li>
         </ul>
         <h4> Approved by Seller : {this.state.approval}</h4>
-        <button onClick={this.handleSellerApproval}>
-          Approve Contract
+        
+        <button onClick={this.fundEscrow}>
+          Initiate Trade with deposit of {parseInt(this.state.price)*parseInt(this.state.quantity)}
         </button>
 
-        <h1>****************************</h1>
+        <h2> Final Buyer Bank approval </h2>
+        <Formik 
+          initialValues={{
+            message: ""
+          }}
+          validate={(values) => {
+            let errors = [];
+            //check if my values have errors
+            return errors;
+          }}
+          onSubmit={ async (values, { setSubmitting })=>{
+            await console.log(values);
 
+            await this.indicateMetCondition();
+            setSubmitting(false);
+            return;
+          }}
+        >
+          {( isSubmitting ) => (
+            <Form>
+              <Field type="text" name="message" placeholder="message"/>
+              <button type="submit">
+                Submit approval
+              </button>
+            </Form>
+          )}
+        </Formik>
+
+
+        <h1>****************************</h1>
         <SellerBankDashboard />
+        <h2> Final Seller Bank approval </h2>
+
+        <Formik 
+          initialValues={{
+            message: ""
+          }}
+          validate={(values) => {
+            let errors = [];
+            //check if my values have errors
+            return errors;
+          }}
+          onSubmit={ async (values, { setSubmitting })=>{
+            await console.log(values);
+
+            await this.indicateMetCondition();
+            setSubmitting(false);
+            return;
+          }}
+        >
+          {( isSubmitting ) => (
+            <Form>
+              <Field type="text" name="message" placeholder="message"/>
+              <button type="submit">
+                Submit approval
+              </button>
+            </Form>
+          )}
+        </Formik>
+
 
         <h1>****************************</h1>
 
         <CaptainDashboard />
+        <h2> Captain approval </h2>
+
+        <Formik 
+          initialValues={{
+            bol:"",
+            message: ""
+          }}
+          validate={(values) => {
+            let errors = [];
+            //check if my values have errors
+            return errors;
+          }}
+          onSubmit={ async (values, { setSubmitting })=>{
+            await console.log(values);
+
+            await this.indicateMetCondition();
+            setSubmitting(false);
+            return;
+          }}
+        >
+          {( isSubmitting ) => (
+            <Form>
+              <Field type="text" name="message" placeholder="message"/>
+              <label> Upload Bill of Lading and invoices</label>
+              <Field type="file" name="bol" placeholder="Bill of Lading"/>
+              <button type="submit">
+                Submit approval
+              </button>
+            </Form>
+          )}
+        </Formik>
 
         <h1>****************************</h1>
 
         <InsuranceCompanyDashboard />
 
+        <h2> Insurance approval </h2>
+
+        <Formik 
+          initialValues={{
+            message: "",
+            insureCert:""
+          }}
+          validate={(values) => {
+            let errors = [];
+            //check if my values have errors
+            return errors;
+          }}
+          onSubmit={ async (values, { setSubmitting })=>{
+            await console.log(values);
+
+            await this.indicateMetCondition();
+            setSubmitting(false);
+            return;
+          }}
+        >
+          {( isSubmitting ) => (
+            <Form>
+              <Field type="text" name="message" placeholder="message"/>
+              <label> Upload Insurance Certificate</label>
+              <Field type="file" name="insureCert" placeholder="Insurance Certificate"/>
+              <button type="submit">
+                Submit approval
+              </button>
+            </Form>
+          )}
+        </Formik>
+
         <h1>****************************</h1>
 
         <SurveyCompanyDashboard />
+
+        <h2> Survey Company approval </h2>
+
+        <Formik 
+          initialValues={{
+            message: "",
+            surveyDoc:""
+          }}
+          validate={(values) => {
+            let errors = [];
+            //check if my values have errors
+            return errors;
+          }}
+          onSubmit={ async (values, { setSubmitting })=>{
+            await console.log(values);
+
+            await this.indicateMetCondition();
+            setSubmitting(false);
+            return;
+          }}
+        >
+          {( isSubmitting ) => (
+            <Form>
+              <Field type="text" name="message" placeholder="message"/>
+              <label> Upload Survey docs</label>
+              <Field type="file" name="surveyDoc" placeholder="Assurance Doc"/>
+              <button type="submit">
+                Submit approval
+              </button>
+            </Form>
+          )}
+        </Formik>
 
         <h1>****************************</h1>
       </div>
