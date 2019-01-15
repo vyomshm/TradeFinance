@@ -147,9 +147,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.5.0;\n\nimport \"./Escrow.sol\";\n\n/**\n * @title ConditionalEscrow\n * @dev Base abstract escrow to only allow withdrawal if a condition is met.\n * @dev Intended usage: See Escrow.sol. Same usage guidelines apply here.\n */\ncontract ConditionalEscrow is Escrow {\n    /**\n    * @dev Returns whether an address is allowed to withdraw their funds. To be\n    * implemented by derived contracts.\n    * @param payee The destination address of the funds.\n    */\n    function withdrawalAllowed(address payee) public view returns (bool);\n\n    function withdraw(address payable payee) public {\n        require(withdrawalAllowed(payee));\n        super.withdraw(payee);\n    }\n}\n",
-  "sourcePath": "/Users/himanshuchauhan/code/TradeFinance/contracts/payment/ConditionalEscrow.sol",
+  "sourcePath": "/Users/vcrizpy/Desktop/dapps/TradeFinance/contracts/payment/ConditionalEscrow.sol",
   "ast": {
-    "absolutePath": "/Users/himanshuchauhan/code/TradeFinance/contracts/payment/ConditionalEscrow.sol",
+    "absolutePath": "/Users/vcrizpy/Desktop/dapps/TradeFinance/contracts/payment/ConditionalEscrow.sol",
     "exportedSymbols": {
       "ConditionalEscrow": [
         943
@@ -170,7 +170,7 @@
         "src": "0:23:5"
       },
       {
-        "absolutePath": "/Users/himanshuchauhan/code/TradeFinance/contracts/payment/Escrow.sol",
+        "absolutePath": "/Users/vcrizpy/Desktop/dapps/TradeFinance/contracts/payment/Escrow.sol",
         "file": "./Escrow.sol",
         "id": 915,
         "nodeType": "ImportDirective",
@@ -531,7 +531,7 @@
     "src": "0:678:5"
   },
   "legacyAST": {
-    "absolutePath": "/Users/himanshuchauhan/code/TradeFinance/contracts/payment/ConditionalEscrow.sol",
+    "absolutePath": "/Users/vcrizpy/Desktop/dapps/TradeFinance/contracts/payment/ConditionalEscrow.sol",
     "exportedSymbols": {
       "ConditionalEscrow": [
         943
@@ -552,7 +552,7 @@
         "src": "0:23:5"
       },
       {
-        "absolutePath": "/Users/himanshuchauhan/code/TradeFinance/contracts/payment/Escrow.sol",
+        "absolutePath": "/Users/vcrizpy/Desktop/dapps/TradeFinance/contracts/payment/Escrow.sol",
         "file": "./Escrow.sol",
         "id": 915,
         "nodeType": "ImportDirective",
@@ -918,7 +918,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.1",
-  "updatedAt": "2019-01-11T13:22:01.859Z",
+  "updatedAt": "2019-01-15T12:45:25.739Z",
   "devdoc": {
     "details": "Base abstract escrow to only allow withdrawal if a condition is met.Intended usage: See Escrow.sol. Same usage guidelines apply here.",
     "methods": {

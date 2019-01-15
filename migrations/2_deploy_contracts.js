@@ -19,9 +19,12 @@ module.exports = function(deployer, network, accounts){
 	let insuranceCertificate = web3.utils.asciiToHex("Milo Insurance certificate");
 	let commodityInfo = web3.utils.asciiToHex("something 3");
 
+	let terms = web3.utils.asciiToHex("A and B agree to do this, this & this");
+	// let termB = web3.utils.asciiToHex("A will do also do this for B");
+	// let termC = web3.utils.asciiToHex("In return B agrees to do this for A");
+
 	deployer.deploy(
 		TradeFinance, 
-		buyer, 
 		seller, 
 		buyerBank, 
 		sellerBank,
@@ -35,6 +38,8 @@ module.exports = function(deployer, network, accounts){
 		tolerance,
 		surveyCompany,
 		insuranceCertificate,
-		commodityInfo
+		commodityInfo,
+		terms,
+		{from : buyer}
 	);
 }

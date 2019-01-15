@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Layout, Menu, Card } from "antd";
-import axios from "axios";
+import { Layout, Menu, Card, message } from "antd";
 import TradeFinance from "./contracts/TradeFinance.json";
 import getWeb3 from "./utils/getWeb3";
 
@@ -17,7 +16,7 @@ import CaptainDashboard from "./components/captainDashboard";
 import InsuranceCompanyDashboard from "./components/insuranceCompanyDashboard";
 import SurveyCompanyDashboard from "./components/surveyCompanyDashboard";
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 class App extends Component {
   state = {
@@ -35,7 +34,8 @@ class App extends Component {
     approval: null,
     web3: null,
     accounts: null,
-    contract: null
+    contract: null,
+    terms: null
   };
 
   componentDidMount = async () => {
@@ -62,7 +62,7 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
+      this.setState({ web3, accounts });
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -70,21 +70,6 @@ class App extends Component {
       );
       console.error(error);
     }
-  };
-
-  runExample = async () => {
-    const { contract } = this.state;
-
-    // Get the value from the contract to prove it worked.
-    const response = await contract.methods.approved().call();
-    console.log("response", response);
-    let t = await contract.methods.trade().call();
-    console.log("trade specs: ", t);
-    // Update state with the result.
-    this.setState({
-      commodity: this.state.web3.utils.hexToAscii(t.commodity),
-      approval: response.toString()
-    });
   };
 
   // handler function for buyer dashboard
@@ -119,12 +104,13 @@ class App extends Component {
     );
     let commodityInfo = web3.utils.asciiToHex(values.commodityInfo);
 
+    let terms = web3.utils.asciiToHex(values.terms);
+
     const tf = new web3.eth.Contract(TradeFinance.abi);
     let deployedTradeFinanceContract = await tf
       .deploy({
         data: TradeFinance.bytecode,
         arguments: [
-          buyer,
           seller,
           buyerBank,
           sellerBank,
@@ -138,16 +124,21 @@ class App extends Component {
           parseInt(tolerance),
           surveyCompany,
           insuranceCertificate,
-          commodityInfo
+          commodityInfo,
+          terms
         ]
       })
       .send({
-        from: accounts[0],
+        from: buyer,
         gas: 4712388
       });
 
     // fetch trade object and update state
     const trade = await deployedTradeFinanceContract.methods.trade().call();
+    const approval = await deployedTradeFinanceContract.methods.approved().call();
+    const retrievedTerms = await deployedTradeFinanceContract.methods.terms().call();
+    // terms = terms.split(";");
+
     console.log("fetch: ", trade);
     this.setState({
       contract: deployedTradeFinanceContract,
@@ -161,7 +152,9 @@ class App extends Component {
       surveyCompany: web3.utils.hexToAscii(trade.surveyCompany),
       insuranceCertificate: web3.utils.hexToAscii(trade.insuranceCertificate),
       commodityInfo: web3.utils.hexToAscii(trade.commodityInfo),
-      status: status[parseInt(trade.status)]
+      status: status[parseInt(trade.status)],
+      approval: approval.toString(),
+      terms: web3.utils.hexToAscii(retrievedTerms)
     });
 
     console.log(deployedTradeFinanceContract);
@@ -193,6 +186,8 @@ class App extends Component {
       approval: approval.toString(),
       status: status[parseInt(trade.status)]
     });
+    message.success(`Contract now approved by seller! | tx : ${tx.transactionHash}`);
+    return tx.transactionHash;
   };
 
   //handler for buyerBank dashboard
@@ -218,6 +213,8 @@ class App extends Component {
     console.log(tx);
     const trade = await contract.methods.trade().call();
     this.setState({ status: status[parseInt(trade.status)] });
+    message.success(`Trade Initiated successfully! | tx : ${tx.transactionHash}`);
+    return tx.transactionHash;
   };
 
   // common handler for all other dashboards
@@ -244,13 +241,13 @@ class App extends Component {
     // update state with latest status
     const trade = await contract.methods.trade().call();
     this.setState({ status: status[parseInt(trade.status)] });
-
+    return tx.transactionHash;
     // TO-DO - Check if event emitted correctly
   };
 
   //handler for seller Bank dashboard
   finalSellerBankApproval = async () => {
-    const { accounts, web3, contract } = this.state;
+    const { accounts, contract } = this.state;
     const sellerBank = accounts[3];
     const status = [
       "Initialized",
@@ -269,7 +266,11 @@ class App extends Component {
     // update state with latest status
     const trade = await contract.methods.trade().call();
     this.setState({ status: status[parseInt(trade.status)] });
+    message.success(`Trade Concluded and Funds transferred successfully! | tx : ${tx.transactionHash}`);
+    return tx.transactionHash;
   };
+
+
   render() {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;

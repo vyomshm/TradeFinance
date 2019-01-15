@@ -129,6 +129,10 @@ button.outline {
   color: #555;
 }
 
+#initTrade {
+  align-self: center;
+}
+
 .ant-layout-header {
   background: #fff;
   display: flex;
@@ -139,6 +143,12 @@ button.outline {
   min-height: calc(100vh - 64px);
 }
 h1 {
+  text-align: center;
+}
+h2 {
+  text-align: center;
+}
+h3 {
   text-align: center;
 }
 button {

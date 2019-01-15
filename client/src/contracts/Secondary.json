@@ -53,9 +53,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.5.0;\n\n/**\n * @title Secondary\n * @dev A Secondary contract can only be used by its primary account (the one that created it)\n */\ncontract Secondary {\n    address private _primary;\n\n    event PrimaryTransferred(\n        address recipient\n    );\n\n    /**\n     * @dev Sets the primary account to the one that is creating the Secondary contract.\n     */\n    constructor () internal {\n        _primary = msg.sender;\n        emit PrimaryTransferred(_primary);\n    }\n\n    /**\n     * @dev Reverts if called from any account other than the primary.\n     */\n    modifier onlyPrimary() {\n        require(msg.sender == _primary);\n        _;\n    }\n\n    /**\n     * @return the address of the primary.\n     */\n    function primary() public view returns (address) {\n        return _primary;\n    }\n\n    /**\n     * @dev Transfers contract to a new primary.\n     * @param recipient The address of new primary.\n     */\n    function transferPrimary(address recipient) public onlyPrimary {\n        require(recipient != address(0));\n        _primary = recipient;\n        emit PrimaryTransferred(_primary);\n    }\n}\n",
-  "sourcePath": "/Users/himanshuchauhan/code/TradeFinance/contracts/ownership/Secondary.sol",
+  "sourcePath": "/Users/vcrizpy/Desktop/dapps/TradeFinance/contracts/ownership/Secondary.sol",
   "ast": {
-    "absolutePath": "/Users/himanshuchauhan/code/TradeFinance/contracts/ownership/Secondary.sol",
+    "absolutePath": "/Users/vcrizpy/Desktop/dapps/TradeFinance/contracts/ownership/Secondary.sol",
     "exportedSymbols": {
       "Secondary": [
         912
@@ -839,7 +839,7 @@
     "src": "0:1110:4"
   },
   "legacyAST": {
-    "absolutePath": "/Users/himanshuchauhan/code/TradeFinance/contracts/ownership/Secondary.sol",
+    "absolutePath": "/Users/vcrizpy/Desktop/dapps/TradeFinance/contracts/ownership/Secondary.sol",
     "exportedSymbols": {
       "Secondary": [
         912
@@ -1628,7 +1628,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.1",
-  "updatedAt": "2019-01-11T13:22:01.863Z",
+  "updatedAt": "2019-01-15T12:45:25.742Z",
   "devdoc": {
     "details": "A Secondary contract can only be used by its primary account (the one that created it)",
     "methods": {

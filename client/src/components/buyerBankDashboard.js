@@ -1,17 +1,18 @@
 import React, { Component } from "react";
-import { Formik, FormikProps, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 
 class BuyerBankDashboard extends Component {
   render() {
     return (
       <div>
         <h1> Buyer Bank Dashboard </h1>
+        <h3> Trade Details </h3>
         <h4>
           {" "}
           Trade Finance Contract :{" "}
           {this.props.contract && this.props.contract.options.address}
         </h4>
-        <h3> Trade Details </h3>
+        <h4> Approved by Seller : {this.props.approval}</h4>
         <h4> Trade Status : {this.props.status} </h4>
         <ul>
           <li> Commodity : {this.props.commodity} </li>
@@ -24,14 +25,15 @@ class BuyerBankDashboard extends Component {
           <li> Survey Company : {this.props.surveyCompany} </li>
           <li> Insurance Certificate : {this.props.insuranceCertificate} </li>
           <li> Commodity Info : {this.props.commodityInfo} </li>
+          <li> Terms of Trade : {this.props.terms} </li>
         </ul>
-        <h4> Approved by Seller : {this.props.approval}</h4>
 
-        <button type="primary" onClick={this.props.fundEscrow}>
+        <button id="initTrade" type="primary" onClick={this.props.fundEscrow}>
           Initiate Trade with deposit of{" "}
           {parseInt(this.props.price) * parseInt(this.props.quantity)}
         </button>
 
+        <h1> ***************** </h1>
         <h2> Final Buyer Bank approval </h2>
         <Formik
           initialValues={{
@@ -51,7 +53,7 @@ class BuyerBankDashboard extends Component {
         >
           {isSubmitting => (
             <Form>
-              <Field type="text" name="message" placeholder="message" />
+              <Field type="text" name="message" placeholder="approval message" />
               <button type="submit">Submit approval</button>
             </Form>
           )}

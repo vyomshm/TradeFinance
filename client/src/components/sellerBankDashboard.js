@@ -1,17 +1,19 @@
 import React, { Component } from "react";
-import { Formik, FormikProps, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
+import { message } from "antd";
 
 class SellerBankDashboard extends Component {
   render() {
     return (
       <div>
         <h1> Seller Bank Dashboard </h1>
+        <h3> Trade Details </h3>
         <h4>
           {" "}
           Trade Finance Contract :{" "}
           {this.props.contract && this.props.contract.options.address}
         </h4>
-        <h3> Trade Details </h3>
+        <h4> Approved by Seller : {this.props.approval}</h4>
         <h4> Trade Status : {this.props.status} </h4>
         <ul>
           <li> Commodity : {this.props.commodity} </li>
@@ -24,8 +26,8 @@ class SellerBankDashboard extends Component {
           <li> Survey Company : {this.props.surveyCompany} </li>
           <li> Insurance Certificate : {this.props.insuranceCertificate} </li>
           <li> Commodity Info : {this.props.commodityInfo} </li>
+          <li> Terms fo Trade : {this.props.terms} </li>
         </ul>
-        <h4> Approved by Seller : {this.props.approval}</h4>
 
         <h3> Seller Bank KYC approval </h3>
         <Formik
@@ -38,9 +40,11 @@ class SellerBankDashboard extends Component {
             return errors;
           }}
           onSubmit={async (values, { setSubmitting }) => {
+            let hide = message.loading("Submitting Approval...", 0);
             await console.log(values);
-
-            await this.props.indicateMetCondition(values.message);
+            // let transactionHash = await this.props.indicateMetCondition(values.message);
+            hide();
+            message.success(`KYC Certificates uploaded!`);
             setSubmitting(false);
             return;
           }}

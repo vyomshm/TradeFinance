@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Formik, FormikProps, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import { message } from "antd";
 
 class BuyerDashboard extends Component {
@@ -18,7 +18,8 @@ class BuyerDashboard extends Component {
             tolerance: "",
             surveyCompany: "",
             insuranceCertificate: "",
-            commodityInfo: ""
+            commodityInfo: "",
+            terms:""
           }}
           validate={values => {
             let errors = [];
@@ -49,7 +50,7 @@ class BuyerDashboard extends Component {
                 placeholder="commodity"
                 required
               >
-                <option selected value="crude oil">
+                <option defaultValue value="crude oil">
                   Crude Oil
                 </option>
                 <option value="coal">Coal</option>
@@ -57,7 +58,7 @@ class BuyerDashboard extends Component {
                 <option value="grain">Grain</option>
                 <option value="sugar">Sugar</option>
               </Field>
-              <Field type="text" required name="price" placeholder="price" />
+              <Field type="text" required name="price" placeholder="price per unit metric" />
               <Field type="date" required name="deliveryDate" />
               <Field
                 component="select"
@@ -65,7 +66,7 @@ class BuyerDashboard extends Component {
                 placeholder="delivery vehicle"
                 required
               >
-                <option selected value="truck">
+                <option defaultValue value="truck">
                   Truck
                 </option>
                 <option value="ship">Ship</option>
@@ -78,7 +79,7 @@ class BuyerDashboard extends Component {
                 placeholder="delivery terms"
                 required
               >
-                <option selected value="FOB">
+                <option defaultValue value="FOB">
                   FOB
                 </option>
                 <option value="CIF">CIF</option>
@@ -89,13 +90,13 @@ class BuyerDashboard extends Component {
                 type="text"
                 name="quantity"
                 required
-                placeholder="quantity"
+                placeholder="quantity in metric units"
               />
               <Field
                 type="text"
                 name="tolerance"
                 required
-                placeholder="tolerance"
+                placeholder="tolerance percentage"
               />
               <Field
                 type="text"
@@ -109,7 +110,7 @@ class BuyerDashboard extends Component {
                 placeholder="insurance certificate"
                 required
               >
-                <option selected value="milo insurnace certificate">
+                <option defaultValue value="milo insurnace certificate">
                   MILO Insurance certificate
                 </option>
                 <option value="enterprise insurance certificate">
@@ -120,6 +121,12 @@ class BuyerDashboard extends Component {
                 type="text"
                 name="commodityInfo"
                 placeholder="commodity info"
+                required
+              />
+              <Field
+                type="text"
+                name="terms"
+                placeholder="terms for trade"
                 required
               />
 

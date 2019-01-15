@@ -37,6 +37,8 @@ contract TradeFinance{
     bytes public description;
     ConditionalTradeEscrow public escrow;
 
+    bytes public terms;
+
     // Doc[] public documentChecklist;
 
     bool public approved;
@@ -66,7 +68,6 @@ contract TradeFinance{
     }
     
     constructor(
-        address _buyer, 
         address _seller, 
         address _buyerBank, 
         address payable _sellerBank,
@@ -80,14 +81,15 @@ contract TradeFinance{
         uint _tolerance,
         bytes32 _insuranceCertificate,
         bytes32 _surveyCompany,
-        bytes memory _commodityInfo
+        bytes memory _commodityInfo,
+        bytes memory _terms
     ) public {
         require( _buyerBank != address(0), 'invalid address');
         require( _sellerBank != address(0), 'invalid address');
-        require( _buyer != address(0), 'invalid address');
+        // require( _buyer != address(0), 'invalid address');
         require( _seller != address(0), 'invalid address');
 
-        buyer = _buyer;
+        buyer = msg.sender;
         seller = _seller;
         buyerBank = _buyerBank;
         sellerBank = _sellerBank;
@@ -109,6 +111,10 @@ contract TradeFinance{
 
         approved = false;
         escrow = new ConditionalTradeEscrow(4);
+        
+        terms = _terms;
+        // terms.push(_termB);
+        // terms.push(_termC);
     }
 
     function approveContract() public onlySeller {
